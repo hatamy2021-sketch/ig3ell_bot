@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: ig3ell-bot
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn main:app
+    envVars:
+      - key: BOT_TOKEN
+        value: 8851801825:AAEz8FdkDCfEw8Nshto9HJumzWLEKmnc2vQ
+      - key: ADMIN_ID
+        value: 6204956765
+      - key: WEBHOOK_URL
+        generateValue: false
