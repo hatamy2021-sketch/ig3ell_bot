@@ -1,20 +1,27 @@
+
 import os
+import json
 from flask import Flask, request
-import telebot
+import requests
 
 TOKEN = os.environ.get("BOT_TOKEN")
-bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
 
-@bot.message_handler(commands=['start'])
-def start(message):
-    bot.send_message(message.chat.id, "سلام! ربات کار می‌کنه ✅")
+def send_message(chat_id, text):
+    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+    data = {"chat_id": chat_id, "text": text}
+    requests.post(url, json=data)
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    if request.get_json():
-        update = telebot.types.Update.de_json(request.get_json())
-        bot.process_new_updates([update])
+    update = request.get_json()
+    if update and "message" in update:
+        chat_id = update["message"]["chat"]["id"]
+        text = update["message"].get("text", "")
+        if text == "/start":
+            send_message(chat_id, "✅ سلام! ربات با موفقیت کار می‌کند.")
+        else:
+            send_message(chat_id, "از دکمه‌های منو استفاده کنید.")
     return "OK", 200
 
 @app.route('/')
