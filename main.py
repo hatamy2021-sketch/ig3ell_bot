@@ -7,7 +7,7 @@ from datetime import datetime
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "8851801825:AAEz8FdkDCfEw8Nshto9HJumzWLEKmnc2vQ")
 ADMIN_ID = int(os.environ.get("ADMIN_ID", "6204956765"))
 ADMIN_USERNAME = "@ig3ell"
-WEBHOOK_URL = os.environ.get("WEBHOOK_URL", "")
+WEBHOOK_URL = os.environ.get("WEBHOOK_URL", "https://ig3ell-bot.onrender.com")
 CARD_NUMBER = "6037-XXXX-XXXX-XXXX"
 CARD_OWNER = "نام صاحب کارت"
 
@@ -146,10 +146,12 @@ def index():
 
 @app.route("/set_webhook")
 def set_webhook():
-    url = f"{WEBHOOK_URL}/{BOT_TOKEN}"
     bot.remove_webhook()
-    bot.set_webhook(url=url)
-    return f"Webhook set: {url}"
+    result = bot.set_webhook(url=f"{WEBHOOK_URL}/{BOT_TOKEN}")
+    if result:
+        return f"✅ Webhook set successfully!"
+    else:
+        return "❌ Failed to set webhook"
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
